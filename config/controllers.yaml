@@ -1,0 +1,112 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30 # Hz
+
+unconstrained_mpc_controller:
+  ros__parameters:
+    type: unconstrained_mpc_controller/UnconstrainedMpcController
+    state_size: 4
+    output_size: 4
+    control_size: 4
+    prediction_horizon: 6
+    control_horizon: 4
+    kmpc_gain:
+      [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+       0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+       0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+       0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+    ky_gain:
+      [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,
+       0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+       0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+       0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+    required_hw_ifaces:
+      plant:
+        control_input:
+          - thruster_allocation_matrix_controller/x/effort
+          - thruster_allocation_matrix_controller/y/effort
+          - thruster_allocation_matrix_controller/z/effort
+          - thruster_allocation_matrix_controller/rz/effort
+        state:
+          - x/velocity
+          - y/velocity
+          - z/velocity
+          - rz/velocity
+        output:
+          - x/velocity
+          - y/velocity
+          - z/velocity
+          - rz/velocity
+
+thruster_allocation_matrix_controller:
+  ros__parameters:
+    type: thruster_allocation_matrix_controller/ThrusterAllocationMatrixController
+    thrusters:
+      - thruster_1_joint
+      - thruster_2_joint
+      - thruster_3_joint
+      - thruster_4_joint
+      - thruster_5_joint
+      - thruster_6_joint
+    reference_controllers:
+      - thruster_1_controller
+      - thruster_2_controller
+      - thruster_3_controller
+      - thruster_4_controller
+      - thruster_5_controller
+      - thruster_6_controller
+    tam:
+      x:  [ -0.707,  -0.707,   0.707,  0.707,      0.0,     0.0]
+      y:  [ 0.707,   -0.707,   0.707, -0.707,      0.0,     0.0]
+      z:  [    0.0,     0.0,     0.0,    0.0,      1.0,     1.0]
+      rx: [    0.0,     0.0,     0.0,    0.0, -0.21805, 0.21805]
+      ry: [    0.0,     0.0,     0.0,    0.0,    -0.12,   -0.12]
+      rz: [0.1888,  -0.1888, -0.1888, 0.1888,      0.0,     0.0]
+
+thruster_1_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_1_joint
+    min_thrust: -40.0
+    max_thrust: 60.0
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
+
+thruster_2_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_2_joint
+    min_thrust: -40.0
+    max_thrust: 60.0
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
+
+thruster_3_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_3_joint
+    min_thrust: -40.0
+    max_thrust: 60.0
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
+
+thruster_4_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_4_joint
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
+    min_thrust: -40.0
+    max_thrust: 60.0
+
+thruster_5_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_5_joint
+    min_thrust: -40.0
+    max_thrust: 60.0
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
+
+thruster_6_controller:
+  ros__parameters:
+    type: thruster_controllers/PolynomialThrustCurveController
+    thruster: thruster_6_joint
+    min_thrust: -40.0
+    max_thrust: 60.0
+    thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]

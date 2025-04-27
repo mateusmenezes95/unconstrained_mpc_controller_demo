@@ -1,0 +1,37 @@
+ubuntu:~/ws_blue$ ros2 control list_hardware_interfaces
+command interfaces
+	integral_sliding_mode_controller/rx/velocity [available] [unclaimed]
+	integral_sliding_mode_controller/ry/velocity [available] [unclaimed]
+	integral_sliding_mode_controller/rz/velocity [available] [unclaimed]
+	integral_sliding_mode_controller/x/velocity [available] [unclaimed]
+	integral_sliding_mode_controller/y/velocity [available] [unclaimed]
+	integral_sliding_mode_controller/z/velocity [available] [unclaimed]
+	thruster_1_controller/thruster_1_joint/effort [available] [claimed]
+	thruster_1_joint/pwm [available] [claimed]
+	thruster_2_controller/thruster_2_joint/effort [available] [claimed]
+	thruster_2_joint/pwm [available] [claimed]
+	thruster_3_controller/thruster_3_joint/effort [available] [claimed]
+	thruster_3_joint/pwm [available] [claimed]
+	thruster_4_controller/thruster_4_joint/effort [available] [claimed]
+	thruster_4_joint/pwm [available] [claimed]
+	thruster_5_controller/thruster_5_joint/effort [available] [claimed]
+	thruster_5_joint/pwm [available] [claimed]
+	thruster_6_controller/thruster_6_joint/effort [available] [claimed]
+	thruster_6_joint/pwm [available] [claimed]
+	thruster_7_controller/thruster_7_joint/effort [available] [claimed]
+	thruster_7_joint/pwm [available] [claimed]
+	thruster_8_controller/thruster_8_joint/effort [available] [claimed]
+	thruster_8_joint/pwm [available] [claimed]
+	thruster_allocation_matrix_controller/rx/effort [available] [claimed]
+	thruster_allocation_matrix_controller/ry/effort [available] [claimed]
+	thruster_allocation_matrix_controller/rz/effort [available] [claimed]
+	thruster_allocation_matrix_controller/x/effort [available] [claimed]
+	thruster_allocation_matrix_controller/y/effort [available] [claimed]
+	thruster_allocation_matrix_controller/z/effort [available] [claimed]
+state interfaces
+	rx/velocity
+	ry/velocity
+	rz/velocity
+	x/velocity
+	y/velocity
+	z/velocity

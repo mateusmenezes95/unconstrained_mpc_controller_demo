@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<robot name="auv" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find unconstrained_mpc_controller_demo)/xacro/chained_urdf.xacro" />
+  <xacro:include filename="$(find unconstrained_mpc_controller_demo)/xacro/chained_ros2_control.xacro" />
+</robot>

@@ -1,0 +1,89 @@
+@startuml dependencies-diagram
+skinparam DefaultTextAlignment center
+
+!include <material/common>
+!include <material/file>
+!include <material/file_xml>
+!include <material/file_document>
+
+hide stereotype
+
+package ardusub_drivers {
+    package ardusub_bringup {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, ardusub_bringup_launch, file, <<launch>>\nardusub_bringup) {
+            }
+
+        }
+    }
+}
+
+package blue {
+    package blue_description {
+        package rviz {
+            MA_FILE_DOCUMENT(Gray, 1, rviz_file, file, <<rviz>>\nrviz) {
+            }
+            ' rviz ..> underwater_world : <<use>>
+        }
+        package gazebo {
+            package worlds {
+                MA_FILE_XML(Gray, 1, underwater_world, file, <<world>>\nunderwater_world) {
+                }
+                ' world ..> robot_description : <<use>>
+            }
+        }
+        package config {
+            package ardusub {
+                MA_FILE(MediumPurple, 1, mavros, file, <<config>>\nmavros) {
+                }
+                MA_FILE(MediumPurple, 1, ardusub_manager, file, <<config>>\nardusub_manager) {
+                }
+                ' mavros ..> underwater_world : <<use>>
+            }
+            package bluerov2 {
+                MA_FILE_DOCUMENT(Olive, 1, ardusub_parm, file, <<config>>\nardusub) {
+                }
+                MA_FILE(MediumPurple, 1, localization, file, <<config>>\nlocalization) {
+                }
+            }   
+        }
+        package description {
+            package bluerov2 {
+                MA_FILE_XML(Red, 1, description_bluerov2_config, file, <<xacro>>\nconfig) {
+                }
+                MA_FILE_XML(Red, 1, description_bluerov2_gazebo, file, <<xacro>>\ngazebo) {
+                }
+                MA_FILE_XML(Red, 1, description_bluerov2_urdf, file, <<xacro>>\nurdf) {
+                }
+                description_bluerov2_config ..> description_bluerov2_gazebo : <<include>>
+                description_bluerov2_config ..> description_bluerov2_urdf : <<include>>
+            }
+            package t200 {
+                MA_FILE_XML(Red, 1, description_t200_gazebo, file, <<xacro>>\ngazebo) {
+                }
+                MA_FILE_XML(Red, 1, description_t200_urdf, file, <<xacro>>\nurdf) {
+                }
+                description_bluerov2_gazebo ..> description_t200_gazebo : <<include>>
+                description_bluerov2_urdf ..> description_t200_urdf : <<include>>
+            }
+        }
+    }
+    package blue_bringup {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, bringup, file, <<launch>>\nbringup) {
+            }
+            bringup ..> underwater_world : <<use>>
+            bringup ..> mavros : <<use>>
+            bringup ..> ardusub_manager : <<use>>
+            bringup ..> rviz_file : <<use>>
+            bringup ..> ardusub_parm : <<use>>
+            bringup ..> localization : <<use>>
+            bringup ..> description_bluerov2_config : <<use>>
+            bringup ..> ardusub_bringup_launch : <<include>>          
+            ' bringup ..> controllers : <<use>>
+            ' bringup ..> robot_description : <<use>>
+        }
+    }
+}
+
+@enduml
