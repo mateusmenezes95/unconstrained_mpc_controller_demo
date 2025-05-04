@@ -8,12 +8,46 @@ skinparam DefaultTextAlignment center
 
 hide stereotype
 
+package ros_gz_sim {
+    package launch {
+        MA_FILE_DOCUMENT(SteelBlue, 1, gz_sim_launch, file, <<launch>>\ngz_sim) {
+        }
+    }
+}
+
 package ardusub_drivers {
+    package ardusub_manager {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, ardusub_manager_launch, file, <<launch>>\nardusub_manager) {
+            }
+        }
+    }
+
+    package ardusub_teleop {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, teleop_launch, file, <<launch>>\nteleop) {
+            }
+            ' teleop ..> underwater_world : <<use>>
+        }
+    }
+
     package ardusub_bringup {
         package launch {
             MA_FILE_DOCUMENT(SteelBlue, 1, ardusub_bringup_launch, file, <<launch>>\nardusub_bringup) {
             }
+            MA_FILE_DOCUMENT(SteelBlue, 1, sitl_launch, file, <<launch>>\nsitl) {
+            }
+        }
+        ardusub_bringup_launch ..> ardusub_manager_launch : <<include>>
+        ardusub_bringup_launch ..> sitl_launch : <<include>>
+        ardusub_bringup_launch ..> teleop_launch : <<include>>
+        sitl_launch ..> gz_sim_launch : <<include>>
+    }
+}
 
+package mobile_to_marine {
+    package launch {
+        MA_FILE_DOCUMENT(SteelBlue, 1, tf_launch, file, <<launch>>\ntf) {
         }
     }
 }
@@ -36,7 +70,7 @@ package blue {
             package ardusub {
                 MA_FILE(MediumPurple, 1, mavros, file, <<config>>\nmavros) {
                 }
-                MA_FILE(MediumPurple, 1, ardusub_manager, file, <<config>>\nardusub_manager) {
+                MA_FILE(MediumPurple, 1, ardusub_manager_file, file, <<config>>\nardusub_manager) {
                 }
                 ' mavros ..> underwater_world : <<use>>
             }
@@ -68,20 +102,33 @@ package blue {
             }
         }
     }
+
+    package blue_localization {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, localization_launch, file, <<launch>>\nlocalization) {
+            }
+        }
+    }
+
     package blue_bringup {
         package launch {
-            MA_FILE_DOCUMENT(SteelBlue, 1, bringup, file, <<launch>>\nbringup) {
+            package bluerov2 {
+                MA_FILE_DOCUMENT(SteelBlue, 1, bringup, file, <<launch>>\nbringup) {
+                }
+                MA_FILE_DOCUMENT(SteelBlue, 1, thrusters_launch, file, <<launch>>\nthrusters) {
+                }
+                bringup ..> underwater_world : <<use>>
+                bringup ..> mavros : <<use>>
+                bringup ..> ardusub_manager_file : <<use>>
+                bringup ..> rviz_file : <<use>>
+                bringup ..> ardusub_parm : <<use>>
+                bringup ..> localization : <<use>>
+                bringup ..> description_bluerov2_config : <<use>>
+                bringup ..> ardusub_bringup_launch : <<include>>
+                bringup .left.> thrusters_launch : <<include>>
+                bringup ..> tf_launch : <<include>>
+                bringup .up.> localization_launch : <<include>>
             }
-            bringup ..> underwater_world : <<use>>
-            bringup ..> mavros : <<use>>
-            bringup ..> ardusub_manager : <<use>>
-            bringup ..> rviz_file : <<use>>
-            bringup ..> ardusub_parm : <<use>>
-            bringup ..> localization : <<use>>
-            bringup ..> description_bluerov2_config : <<use>>
-            bringup ..> ardusub_bringup_launch : <<include>>          
-            ' bringup ..> controllers : <<use>>
-            ' bringup ..> robot_description : <<use>>
         }
     }
 }
