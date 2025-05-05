@@ -83,14 +83,10 @@ package blue {
         }
         package description {
             package bluerov2 {
-                MA_FILE_XML(Red, 1, description_bluerov2_config, file, <<xacro>>\nconfig) {
-                }
                 MA_FILE_XML(Red, 1, description_bluerov2_gazebo, file, <<xacro>>\ngazebo) {
                 }
                 MA_FILE_XML(Red, 1, description_bluerov2_urdf, file, <<xacro>>\nurdf) {
                 }
-                description_bluerov2_config ..> description_bluerov2_gazebo : <<include>>
-                description_bluerov2_config ..> description_bluerov2_urdf : <<include>>
             }
             package t200 {
                 MA_FILE_XML(Red, 1, description_t200_gazebo, file, <<xacro>>\ngazebo) {
@@ -113,23 +109,51 @@ package blue {
     package blue_bringup {
         package launch {
             package bluerov2 {
-                MA_FILE_DOCUMENT(SteelBlue, 1, bringup, file, <<launch>>\nbringup) {
+                MA_FILE_DOCUMENT(SteelBlue, 1, bringup_launch, file, <<launch>>\nbringup) {
                 }
                 MA_FILE_DOCUMENT(SteelBlue, 1, thrusters_launch, file, <<launch>>\nthrusters) {
                 }
-                bringup ..> underwater_world : <<use>>
-                bringup ..> mavros : <<use>>
-                bringup ..> ardusub_manager_file : <<use>>
-                bringup ..> rviz_file : <<use>>
-                bringup ..> ardusub_parm : <<use>>
-                bringup ..> localization : <<use>>
-                bringup ..> description_bluerov2_config : <<use>>
-                bringup ..> ardusub_bringup_launch : <<include>>
-                bringup .left.> thrusters_launch : <<include>>
-                bringup ..> tf_launch : <<include>>
-                bringup .up.> localization_launch : <<include>>
+                bringup_launch ..> underwater_world : <<use>>
+                bringup_launch ..> mavros : <<use>>
+                bringup_launch ..> ardusub_manager_file : <<use>>
+                bringup_launch ..> rviz_file : <<use>>
+                bringup_launch ..> ardusub_parm : <<use>>
+                bringup_launch ..> localization : <<use>>
+                bringup_launch ..> ardusub_bringup_launch : <<include>>
+                bringup_launch .left.> thrusters_launch : <<include>>
+                bringup_launch ..> tf_launch : <<include>>
+                bringup_launch ..> localization_launch : <<include>>
             }
         }
+    }
+
+    package blue_demos {
+        package control_integration {
+            package launch {
+                MA_FILE_DOCUMENT(SteelBlue, 1, bluerov2_demo_launch, file, <<launch>>\nbluerov2_demo) {
+                }
+                MA_FILE_DOCUMENT(SteelBlue, 1, bluerov2_controllers_launch, file, <<launch>>\nbluerov2_controllers) {
+                }
+            }
+            package description {
+                package ros2_control {
+                    MA_FILE_XML(Red, 1, bluerov2_ros2_control_xacro, file, <<xacro>>\nbluerov2.ros2_control) {
+                    }
+                }
+                package urdf {
+                    MA_FILE_XML(Red, 1, bluerov2_config_xacro, file, <<xacro>>\nbluerov2.config) {
+                    }
+                }
+            }
+        }
+        bluerov2_demo_launch ..> bringup_launch : <<include>>
+        bluerov2_demo_launch ..> bluerov2_config_xacro : <<use>>
+
+        bluerov2_config_xacro ..> description_bluerov2_gazebo : <<include>>
+        bluerov2_config_xacro ..> description_bluerov2_urdf : <<include>>
+        bluerov2_config_xacro .left.> bluerov2_ros2_control_xacro : <<include>>
+
+        bluerov2_controllers_launch .down.> bluerov2_ros2_control_xacro : <<depends>>
     }
 }
 
