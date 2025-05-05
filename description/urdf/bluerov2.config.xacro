@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<robot name="bluerov2" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="use_sim" default="true" />
+
+  <!-- Import BlueROV2 macro -->
+  <xacro:include filename="$(find blue_description)/description/bluerov2/urdf.xacro" />
+  <xacro:bluerov2_urdf prefix="$(arg prefix)" />
+
+  <!-- Import the Gazebo macro -->
+  <xacro:if value="$(arg use_sim)">
+    <xacro:include filename="$(find blue_description)/description/bluerov2/gazebo.xacro" />
+    <xacro:bluerov2_gazebo prefix="$(arg prefix)" />
+  </xacro:if>
+
+  <!-- Import ros2_control macro -->
+  <xacro:include
+    filename="$(find unconstrained_mpc_controller_demo)/description/ros2_control/ardusub_thruster_hw_component.ros2_control.xacro" />
+  <xacro:ardusub_thruster_hw_component prefix="$(arg prefix)" name="bluerov2_thrusters" />
+
+  <xacro:include
+    filename="$(find unconstrained_mpc_controller_demo)/description/ros2_control/gz_odom_pub_hw_component.ros2_control.xacro" />
+  <xacro:gz_odom_pub_hw_component prefix="$(arg prefix)"/>
+
+  <xacro:include
+    filename="$(find unconstrained_mpc_controller_demo)/description/gazebo/gz_ros2_control.xacro" />
+  <xacro:gz_ros2_control prefix="$(arg prefix)" />
+
+</robot>

@@ -12,7 +12,7 @@ install(
     DIRECTORY
       launch
       config
-      xacro
+      description
     DESTINATION
       share/${PROJECT_NAME}
 )
