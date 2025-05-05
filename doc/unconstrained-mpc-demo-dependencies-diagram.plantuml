@@ -1,0 +1,165 @@
+@startuml unconstrained-mpc-demo-dependencies-diagram
+skinparam DefaultTextAlignment center
+
+!include <material/common>
+!include <material/file>
+!include <material/file_xml>
+!include <material/file_document>
+
+hide stereotype
+
+package ros_gz_sim {
+    package launch {
+        MA_FILE_DOCUMENT(SteelBlue, 1, gz_sim_launch, file, <<launch>>\ngz_sim) {
+        }
+    }
+}
+
+package ardusub_drivers {
+    package ardusub_manager {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, ardusub_manager_launch, file, <<launch>>\nardusub_manager) {
+            }
+        }
+    }
+
+    package ardusub_teleop {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, teleop_launch, file, <<launch>>\nteleop) {
+            }
+            ' teleop ..> underwater_world : <<use>>
+        }
+    }
+
+    package ardusub_bringup {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, ardusub_bringup_launch, file, <<launch>>\nardusub_bringup) {
+            }
+            MA_FILE_DOCUMENT(SteelBlue, 1, sitl_launch, file, <<launch>>\nsitl) {
+            }
+        }
+        ardusub_bringup_launch ..> ardusub_manager_launch : <<include>>
+        ardusub_bringup_launch ..> sitl_launch : <<include>>
+        ardusub_bringup_launch ..> teleop_launch : <<include>>
+        sitl_launch ..> gz_sim_launch : <<include>>
+    }
+}
+
+package mobile_to_marine {
+    package launch {
+        MA_FILE_DOCUMENT(SteelBlue, 1, tf_launch, file, <<launch>>\ntf) {
+        }
+    }
+}
+
+package blue {
+    package blue_description {
+        package rviz {
+            MA_FILE_DOCUMENT(Gray, 1, rviz_file, file, <<rviz>>\nrviz) {
+            }
+            ' rviz ..> underwater_world : <<use>>
+        }
+        package gazebo {
+            package worlds {
+                MA_FILE_XML(Gray, 1, underwater_world, file, <<world>>\nunderwater_world) {
+                }
+                ' world ..> robot_description : <<use>>
+            }
+        }
+        package config {
+            package ardusub {
+                MA_FILE(MediumPurple, 1, mavros, file, <<config>>\nmavros) {
+                }
+                MA_FILE(MediumPurple, 1, ardusub_manager_file, file, <<config>>\nardusub_manager) {
+                }
+                ' mavros ..> underwater_world : <<use>>
+            }
+            package bluerov2 {
+                MA_FILE_DOCUMENT(Olive, 1, ardusub_parm, file, <<config>>\nardusub) {
+                }
+                MA_FILE(MediumPurple, 1, localization, file, <<config>>\nlocalization) {
+                }
+            }   
+        }
+        package description {
+            package bluerov2 {
+                MA_FILE_XML(Red, 1, description_bluerov2_gazebo, file, <<xacro>>\ngazebo) {
+                }
+                MA_FILE_XML(Red, 1, description_bluerov2_urdf, file, <<xacro>>\nurdf) {
+                }
+            }
+            package t200 {
+                MA_FILE_XML(Red, 1, description_t200_gazebo, file, <<xacro>>\ngazebo) {
+                }
+                MA_FILE_XML(Red, 1, description_t200_urdf, file, <<xacro>>\nurdf) {
+                }
+                description_bluerov2_gazebo ..> description_t200_gazebo : <<include>>
+                description_bluerov2_urdf ..> description_t200_urdf : <<include>>
+            }
+        }
+    }
+
+    package blue_localization {
+        package launch {
+            MA_FILE_DOCUMENT(SteelBlue, 1, localization_launch, file, <<launch>>\nlocalization) {
+            }
+        }
+    }
+
+    package blue_bringup {
+        package launch {
+            package bluerov2 {
+                MA_FILE_DOCUMENT(SteelBlue, 1, bringup_launch, file, <<launch>>\nbringup) {
+                }
+                MA_FILE_DOCUMENT(SteelBlue, 1, thrusters_launch, file, <<launch>>\nthrusters) {
+                }
+                bringup_launch ..> underwater_world : <<use>>
+                bringup_launch ..> mavros : <<use>>
+                bringup_launch ..> ardusub_manager_file : <<use>>
+                bringup_launch ..> rviz_file : <<use>>
+                bringup_launch ..> ardusub_parm : <<use>>
+                bringup_launch ..> localization : <<use>>
+                bringup_launch ..> ardusub_bringup_launch : <<include>>
+                bringup_launch .left.> thrusters_launch : <<include>>
+                bringup_launch ..> tf_launch : <<include>>
+                bringup_launch ..> localization_launch : <<include>>
+            }
+        }
+    }
+}
+
+package unconstrained_mpc_controller_demo {
+    package config {
+        MA_FILE(MediumPurple, 1, unconstrained_mpc_controller_demo_controllers_config, file, <<config>>\ncontrollers) {
+        }
+    }
+    package description {
+        package gazebo {
+            MA_FILE_XML(Red, 1, unconstrained_mpc_controller_demo_gazebo_xacro, file, <<xacro>>\ngazebo) {
+            }
+        }
+        package ros2_control {
+            MA_FILE_XML(Red, 1, unconstrained_mpc_controller_demo_ros2_control_xacro, file, <<xacro>>\nros2_control) {
+            }
+        }
+        package urdf {
+            MA_FILE_XML(Red, 1, unconstrained_mpc_controller_demo_config_xacro, file, <<xacro>>\nbluerov2) {
+            }
+        }
+    }
+    package launch {
+        MA_FILE_DOCUMENT(SteelBlue, 1, unconstrained_mpc_controller_demo_launch, file, <<launch>>\ndemo) {
+        }
+    }
+}
+
+unconstrained_mpc_controller_demo_launch ..> bringup_launch : <<include>>
+unconstrained_mpc_controller_demo_launch ..> unconstrained_mpc_controller_demo_config_xacro : <<use>>
+
+unconstrained_mpc_controller_demo_config_xacro ..> description_bluerov2_gazebo : <<include>>
+unconstrained_mpc_controller_demo_config_xacro ..> description_bluerov2_urdf : <<include>>
+unconstrained_mpc_controller_demo_config_xacro ..> unconstrained_mpc_controller_demo_gazebo_xacro : <<include>>
+unconstrained_mpc_controller_demo_config_xacro ..> unconstrained_mpc_controller_demo_ros2_control_xacro : <<include>>
+
+unconstrained_mpc_controller_demo_gazebo_xacro ..> unconstrained_mpc_controller_demo_controllers_config : <<use>>
+@enduml
