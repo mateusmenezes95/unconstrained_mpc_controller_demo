@@ -33,21 +33,6 @@ def generate_launch_description():
     Returns:
         The example launch description.
     """
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name='xacro')]),
-            ' ',
-            PathJoinSubstitution(
-                [
-                    FindPackageShare('unconstrained_mpc_controller_demo'),
-                    'xacro',
-                    'chained_config.xacro',
-                ]
-            ),
-        ]
-    )
-    robot_description = {'robot_description': robot_description_content}
-
     velocity_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
@@ -115,29 +100,6 @@ def generate_launch_description():
     )
 
     nodes = [
-        Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
-            output='both',
-            parameters=[robot_description],
-        ),
-        Node(
-            package='controller_manager',
-            executable='ros2_control_node',
-            output='both',
-            parameters=[
-                PathJoinSubstitution(
-                    [
-                        FindPackageShare('unconstrained_mpc_controller_demo'),
-                        'config',
-                        'controllers.yaml',
-                    ]
-                ),
-            ],
-            remappings=[
-                ('/controller_manager/robot_description', '/robot_description'),
-            ],
-        ),
         *delay_thruster_spawners,
         delay_tam_controller_spawner_after_thruster_controller_spawners,
         delay_velocity_controller_spawner_after_tam_controller_spawner,
