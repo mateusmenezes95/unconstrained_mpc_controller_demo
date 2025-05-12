@@ -1,6 +1,9 @@
 controller_manager:
   ros__parameters:
     update_rate: 30 # Hz
+    hardware_components_initial_state:
+      unconfigured:
+        - bluerov2_thrusters
 
 unconstrained_mpc_controller:
   ros__parameters:
@@ -42,12 +45,12 @@ thruster_allocation_matrix_controller:
   ros__parameters:
     type: thruster_allocation_matrix_controller/ThrusterAllocationMatrixController
     thrusters:
-      - thruster_1_joint
-      - thruster_2_joint
-      - thruster_3_joint
-      - thruster_4_joint
-      - thruster_5_joint
-      - thruster_6_joint
+      - thruster1_joint
+      - thruster2_joint
+      - thruster3_joint
+      - thruster4_joint
+      - thruster5_joint
+      - thruster6_joint
     reference_controllers:
       - thruster_1_controller
       - thruster_2_controller
@@ -66,7 +69,7 @@ thruster_allocation_matrix_controller:
 thruster_1_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_1_joint
+    thruster: thruster1_joint
     min_thrust: -40.0
     max_thrust: 60.0
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
@@ -74,7 +77,7 @@ thruster_1_controller:
 thruster_2_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_2_joint
+    thruster: thruster2_joint
     min_thrust: -40.0
     max_thrust: 60.0
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
@@ -82,7 +85,7 @@ thruster_2_controller:
 thruster_3_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_3_joint
+    thruster: thruster3_joint
     min_thrust: -40.0
     max_thrust: 60.0
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
@@ -90,7 +93,7 @@ thruster_3_controller:
 thruster_4_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_4_joint
+    thruster: thruster4_joint
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
     min_thrust: -40.0
     max_thrust: 60.0
@@ -98,7 +101,7 @@ thruster_4_controller:
 thruster_5_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_5_joint
+    thruster: thruster5_joint
     min_thrust: -40.0
     max_thrust: 60.0
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]
@@ -106,7 +109,7 @@ thruster_5_controller:
 thruster_6_controller:
   ros__parameters:
     type: thruster_controllers/PolynomialThrustCurveController
-    thruster: thruster_6_joint
+    thruster: thruster6_joint
     min_thrust: -40.0
     max_thrust: 60.0
     thrust_curve_coefficients: [1498.0, 12.01, -0.04731, -0.002098, 0.00002251]

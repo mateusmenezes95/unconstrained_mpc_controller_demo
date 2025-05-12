@@ -33,6 +33,14 @@ def generate_launch_description():
     Returns:
         The example launch description.
     """
+    config_file = PathJoinSubstitution(
+        [
+            FindPackageShare('unconstrained_mpc_controller_demo'),
+            'config',
+            'controllers.yaml',
+        ]
+    )
+
     velocity_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
@@ -40,6 +48,7 @@ def generate_launch_description():
             'unconstrained_mpc_controller',
             '--controller-manager',
             ['', 'controller_manager'],
+            '--param-file', config_file
         ],
     )
 
@@ -51,6 +60,7 @@ def generate_launch_description():
                 f'thruster_{i + 1}_controller',
                 '--controller-manager',
                 ['', 'controller_manager'],
+                '--param-file', config_file
             ],
         )
         for i in range(6)
@@ -79,6 +89,7 @@ def generate_launch_description():
             'thruster_allocation_matrix_controller',
             '--controller-manager',
             ['', 'controller_manager'],
+            '--param-file', config_file
         ],
     )
     delay_tam_controller_spawner_after_thruster_controller_spawners = (

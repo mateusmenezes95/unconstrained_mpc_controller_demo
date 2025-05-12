@@ -50,10 +50,6 @@ def generate_launch_description():
         ]
     )
 
-    log_robot_description = LogInfo(
-        msg=robot_description_content
-    )
-
     blue_bringup_launch = IncludeLaunchDescription(
         PathJoinSubstitution(
             [
@@ -71,7 +67,6 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            log_robot_description,
             blue_bringup_launch,
         ]
     )
