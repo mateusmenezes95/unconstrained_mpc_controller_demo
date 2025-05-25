@@ -19,11 +19,12 @@
 # SOFTWARE.
 
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
+from launch.actions import RegisterEventHandler, ExecuteProcess, LogInfo
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.substitutions import FindExecutable, PathJoinSubstitution, TextSubstitution
 
 from launch_ros.actions import Node
+
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -41,15 +42,14 @@ def generate_launch_description():
         ]
     )
 
-    velocity_controller_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        arguments=[
-            'unconstrained_mpc_controller',
-            '--controller-manager',
-            ['', 'controller_manager'],
-            '--param-file', config_file
-        ],
+    set_thruster_hw_component_state_proccess = ExecuteProcess(
+        cmd=[
+            FindExecutable(name='ros2'),
+            'control',
+            'set_hardware_component_state',
+            'bluerov2_thrusters',
+            'active'
+        ]
     )
 
     thruster_spawners = [
@@ -82,6 +82,28 @@ def generate_launch_description():
                 )
             )
 
+    first_thrust_controller_spawner = delay_thruster_spawners[0]
+    set_thruster_hw_component_state_proccess_handler = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=set_thruster_hw_component_state_proccess,
+            on_exit=[
+                first_thrust_controller_spawner,
+                LogInfo(msg='First thruster controller spawned')
+            ]
+        )
+    )
+
+    velocity_controller_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'unconstrained_mpc_controller',
+            '--controller-manager',
+            ['', 'controller_manager'],
+            '--param-file', config_file
+        ],
+    )
+
     tam_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
@@ -92,11 +114,18 @@ def generate_launch_description():
             '--param-file', config_file
         ],
     )
+
     delay_tam_controller_spawner_after_thruster_controller_spawners = (
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=thruster_spawners[-1],
-                on_exit=[tam_controller_spawner],
+                on_exit=[
+                    LogInfo(msg='Starting TAM controller spawner'),
+                    tam_controller_spawner,
+                    LogInfo(
+                        msg='Thruster allocation matrix controller spawner executed successfully.'
+                    )
+                ],
             )
         )
     )
@@ -105,13 +134,23 @@ def generate_launch_description():
         RegisterEventHandler(
             event_handler=OnProcessExit(
                 target_action=tam_controller_spawner,
-                on_exit=[velocity_controller_spawner],
+                on_exit=[
+                    LogInfo(
+                        msg='Starting unconstrained MPC controller spawner'
+                    ),
+                    velocity_controller_spawner,
+                    LogInfo(
+                        msg='Unconstrained MPC controller "{}" spawner executed successfully.'
+                    )
+                ],
             )
         )
     )
 
     nodes = [
-        *delay_thruster_spawners,
+        set_thruster_hw_component_state_proccess,
+        set_thruster_hw_component_state_proccess_handler,
+        *delay_thruster_spawners[1:],
         delay_tam_controller_spawner_after_thruster_controller_spawners,
         delay_velocity_controller_spawner_after_tam_controller_spawner,
     ]
