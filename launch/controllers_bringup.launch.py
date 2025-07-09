@@ -42,6 +42,13 @@ def generate_launch_description():
         ]
     )
 
+    control_loop_node = Node(
+        package='controller_manager',
+        executable='ros2_control_node',
+        output='both',
+        parameters=[config_file],
+    )
+
     set_thruster_hw_component_state_proccess = ExecuteProcess(
         cmd=[
             FindExecutable(name='ros2'),
@@ -148,6 +155,7 @@ def generate_launch_description():
     )
 
     nodes = [
+        control_loop_node,
         set_thruster_hw_component_state_proccess,
         set_thruster_hw_component_state_proccess_handler,
         *delay_thruster_spawners[1:],

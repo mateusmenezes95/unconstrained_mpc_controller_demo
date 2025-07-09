@@ -1,24 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:macro name="gz_odom_pub_hw_component" params="prefix">
-    <ros2_control name="gz_odom_pub" type="system">
+    <ros2_control name="gz_odom_pub" type="sensor">
       <hardware>
         <plugin>gz_odom_pub_hw_component/GzOdomPubHwComponent</plugin>
+        <param name="odom_topic_name">/model/bluerov2/odometry</param>
+        <param name="ref_frame_name">ned</param>
       </hardware>
-      <gpio name="bluerov2">
-        <state_interface name="velocity/angular/x"/>
-        <state_interface name="velocity/angular/y"/>
-        <state_interface name="velocity/angular/z"/>
-        <state_interface name="velocity/linear/x"/>
-        <state_interface name="velocity/linear/y"/>
-        <state_interface name="velocity/linear/z"/>
-        <state_interface name="orientation/roll"/>
-        <state_interface name="orientation/pitch"/>
-        <state_interface name="orientation/yaw"/>
-        <state_interface name="position/x"/>
-        <state_interface name="position/y"/>
-        <state_interface name="position/z"/>
-      </gpio>
     </ros2_control>
   </xacro:macro>
 </robot>

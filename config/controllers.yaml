@@ -4,6 +4,8 @@ controller_manager:
     hardware_components_initial_state:
       unconfigured:
         - bluerov2_thrusters
+      active:
+        - gz_odom_pub
 
 unconstrained_mpc_controller:
   ros__parameters:
@@ -32,15 +34,15 @@ unconstrained_mpc_controller:
           - thruster_allocation_matrix_controller/z/effort
           - thruster_allocation_matrix_controller/rz/effort
         state:
-          - bluerov2/velocity/linear/x
-          - bluerov2/velocity/linear/y
-          - bluerov2/velocity/linear/z
-          - bluerov2/velocity/angular/z
+          - odom/linear_vel_x
+          - odom/linear_vel_y
+          - odom/linear_vel_z
+          - odom/angular_vel_z
         output:
-          - bluerov2/velocity/linear/x
-          - bluerov2/velocity/linear/y
-          - bluerov2/velocity/linear/z
-          - bluerov2/velocity/angular/z
+          - odom/linear_vel_x
+          - odom/linear_vel_y
+          - odom/linear_vel_z
+          - odom/angular_vel_z
 
 thruster_allocation_matrix_controller:
   ros__parameters:

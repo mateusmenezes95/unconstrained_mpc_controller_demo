@@ -23,8 +23,4 @@
     filename="$(find unconstrained_mpc_controller_demo)/description/ros2_control/gz_odom_pub_hw_component.ros2_control.xacro" />
   <xacro:gz_odom_pub_hw_component prefix="$(arg prefix)"/>
 
-  <xacro:include
-    filename="$(find unconstrained_mpc_controller_demo)/description/gazebo/gz_ros2_control.xacro" />
-  <xacro:gz_ros2_control prefix="$(arg prefix)" />
-
 </robot>
